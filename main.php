@@ -1,6 +1,6 @@
 <?php 
 
-	// error_reporting(0);
+	error_reporting(0);
     //koneksi database
     require_once("config/koneksi.php");
     //mulai session
@@ -9,6 +9,12 @@
     if(!isset($_SESSION['username'])){
             //jika sudah login
             header("location:./");
+    }
+    if(!isset($_SESSION['status_user'])){
+    	$ambilstatus = mysqli_query($db,"SELECT * FROM tbl_user WHERE id_user='".$_SESSION['id']."'");
+    	$rowambilStatus = mysqli_fetch_array($ambilstatus);
+    	session_start();
+    	$_SESSION['status_user'] = $rowambilStatus['status_user'];
     }
 
 ?>
@@ -41,6 +47,11 @@
 				</div>
 				<!-- Pesan -->
 				<div class="messages">
+					<div id="load-messages">
+						<div id="loader-messages">
+							<span></span>			
+						</div>
+					</div>
 					<ul>
 						
 					</ul>
@@ -49,7 +60,7 @@
 					<div class="wrap">
 						<input type="text" placeholder="Tulis pesan..." autofocus="" />
 						<i class="fa fa-paperclip attachment" aria-hidden="true"></i>
-						<button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+						<button class="submit"><i class="fa fa-paper-plane" aria-hidden="true" onclick="newMessage();"></i></button>
 					</div>
 				</div>
 			</div>

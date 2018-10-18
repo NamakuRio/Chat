@@ -33,12 +33,13 @@
                     data: 'username='+username+'&password='+password,
                     url: '../config/proses.php?action=login',
                     success: function(result){
+                        console.log(result);
                         response = JSON.parse(result);
 
                         if(response.status == "sukses"){
                             swal("Sukses!", "Anda Berhasil Login", "success");
                             setInterval(function(){
-                                window.location="../";
+                                window.location="../chat";
                             })
                         }
 

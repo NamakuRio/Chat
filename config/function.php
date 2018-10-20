@@ -1,7 +1,7 @@
 <?php 
     
     //menghilangkan notifikasi error
-    error_reporting();
+    error_reporting(0);
     //koneksi
 	require_once("koneksi.php");
 
@@ -86,6 +86,61 @@
             $response[] = $f;
         }
         $result = array('status' => 'sukses', 'data' => $response);
+
+        return $result;
+
+    }
+
+    function carikontak($key,$db){
+
+        $query = mysqli_query($db,"SELECT * FROM tbl_user WHERE nama_user LIKE '%$key%' ORDER BY nama_user DESC");
+        $nums = mysqli_num_rows($query);
+        $response = array();
+        while ($f = mysqli_fetch_assoc($query)) {
+            $response[] = $f;
+        }
+        $result = array('status' => 'sukses', 'data' => $response, 'jumlah' => $nums);
+
+        return $result;
+
+    }
+
+    function bukachat($db){
+
+        $query = mysqli_query($db,"SELECT * FROM tbl_pesan ORDER BY created_pesan DESC");
+        $querys = mysqli_query($db,"SELECT * FROM tbl_pesan ORDER BY created_pesan ASC");
+        $nums = mysqli_num_rows($querys);
+        $response = array();
+        while ($f = mysqli_fetch_assoc($querys)) {
+            $response[] = $f;
+        }
+        $result = array('status' => 'sukses', 'data' => $response, 'jumlah' => $nums);
+
+        return $result;
+
+    }
+
+    function cekchat($jml_awal,$db){
+
+        $query = mysqli_query($db,"SELECT * FROM tbl_pesan");
+        $nums = mysqli_num_rows($query);
+        $response = array();
+        
+        if($nums > $jml_awal){
+
+           $getChat = $nums - $jml_awal;
+
+           $query_new = mysqli_query($db,"SELECT * FROM tbl_pesan ORDER BY created_pesan DESC LIMIT $getChat");
+
+           while ($f = mysqli_fetch_assoc($query_new)) {
+                $response[] = $f;
+            }
+
+            $result = array('status' => 'sukses', 'data' => $response, 'jml_akhir' => $nums);
+
+        } else {
+            $result = array('status' => 'gagal', 'data' => $response);            
+        }
 
         return $result;
 

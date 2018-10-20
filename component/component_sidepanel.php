@@ -36,12 +36,19 @@
 				</div>
 				<div id="search">
 					<label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
+					<label for="" id="btn-close-search-contacts" onclick="clearSearch();"><i class="fa fa-close" aria-hidden="true"></i></label>
 					<input type="text" placeholder="Cari kontak..." onkeyup="carikontak(this.value)"; />
 				</div>
 				<div id="contacts">
+					<!-- <div id="loader-contacts">
+						<span></span>
+						<span></span>
+					</div> -->
 					<div id="loader-contacts">
-						<span></span>
-						<span></span>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
 					</div>
 					<ul>
 						<!-- <li class="contact">

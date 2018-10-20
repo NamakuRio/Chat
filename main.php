@@ -48,9 +48,10 @@
 				<!-- Pesan -->
 				<div class="messages">
 					<div id="load-messages">
-						<div id="loader-messages">
+						<div class="lds-dual-ring"></div>
+						<!-- <div id="loader-messages">
 							<span></span>			
-						</div>
+						</div> -->
 					</div>
 					<ul>
 						

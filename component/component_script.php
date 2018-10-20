@@ -43,13 +43,14 @@
 
 	function newMessage() {
 		message = $(".message-input input").val();
+		message_encode = Base64.encode(message);
 		if($.trim(message) == '') {
 			return false;
 		}
-
+		console.log(message_encode);
 		$.ajax({
             type:'POST',
-            data: 'message='+message,
+            data: 'message='+message_encode,
             url: 'config/proses.php?action=kirimpesan',
             success: function(result){
                 var response = JSON.parse(result);
@@ -118,11 +119,12 @@
                 if(response.status == 'sukses'){
                 	 $.each(response.data,function(prop,obj){
 	                	// console.log("prop: "+prop+" obj: "+obj+"\n");
-	                	$('<li class="contact" id="' + Base64.encode(obj.username_user) + '" onclick="bukachat(' + obj.id_user + ');"><div class="wrap"><span class="contact-status ' + obj.status_user.toLowerCase() + '"></span><img src="assets/images/user.jpg" alt="" /><div class="meta"><p class="name">' + obj.nama_user + '</p><p class="preview"><span>Anda:</span> Hai.</p></div></div></li>').appendTo($('#contacts ul'));
+	                	$('<li class="contact" id="' + Base64.encode(obj.username_user) + '" onclick="bukachat(' + obj.id_user + ',' + "'" + Base64.encode(obj.username_user) + "'" +');"><div class="wrap"><span class="contact-status ' + obj.status_user.toLowerCase() + '"></span><img src="assets/images/user.jpg" alt="" /><div class="meta"><p class="name">' + obj.nama_user + '</p><p class="preview"><span>Anda:</span> Hai.</p></div></div></li>').appendTo($('#contacts ul'));
 	                });
                 	 $("#contacts ul").animate({ scrollTop: $('#contacts').prop('scrollHeight') }, "normal");
                 	 $('#loader-contacts').fadeOut();
                 } else {
+                	$('#loader-contacts').fadeOut();
                 	console.log("gagal");
                 }
 
@@ -142,10 +144,11 @@
                 if(response.status == 'sukses'){
                 	 $.each(response.data,function(prop,obj){
 	                	// console.log("prop: "+prop+" obj: "+obj+"\n");
-	                	$('<li class="contact" onclick="bukachat(' + obj.id_user + ');"><div class="wrap"><span class="contact-status '+ obj.status_user.toLowerCase() +'"></span><img src="assets/images/user.jpg" alt="" /><div class="meta"><p class="name">' + obj.nama_user + '</p><p class="preview"><span>Anda:</span> Hai.</p></div></div></li>').appendTo($('#contacts ul'));
+	                	$('<li class="contact" id="' + Base64.encode(obj.username_user) + '" onclick="bukachat(' + obj.id_user + ',' + "'" + Base64.encode(obj.username_user) + "'" +');"><div class="wrap"><span class="contact-status '+ obj.status_user.toLowerCase() +'"></span><img src="assets/images/user.jpg" alt="" /><div class="meta"><p class="name">' + obj.nama_user + '</p><p class="preview"><span>Anda:</span> Hai.</p></div></div></li>').appendTo($('#contacts ul'));
 	                });
                 	 $('#loader-contacts').fadeOut();
                 } else {
+                	$('#loader-contacts').fadeOut();
                 	console.log("gagal");
                 }
 
@@ -154,12 +157,138 @@
 	}
 
 	function carikontak(val){
+
+		$('#loader-contacts').fadeIn();
+	   	$('#btn-close-search-contacts').fadeIn();
 		console.log(val);
+
+		if($.trim(val) == '') {
+	   		// $('#loader-contacts').fadeOut();
+	   		$('#btn-close-search-contacts').fadeOut();
+	   		refreshkontak();
+			return false;
+		}
+
+		$.ajax({
+            type:'POST',
+            data: 'key='+val,
+            url: 'config/proses.php?action=carikontak',
+            success: function(result){
+            	// console.log(result);
+                var response = JSON.parse(result);
+               	$('#contacts ul li').remove();
+                if(response.status == 'sukses'){
+                	if(response.jumlah == 0){
+                		$('<li class="contact"><div class="wrap"><div class="meta"><p class="name">Maaf, data yang Anda cari tidak ada</p></div></div></li>').appendTo($('#contacts ul'));
+                	}else {
+	                	 $.each(response.data,function(prop,obj){
+		                	// console.log("prop: "+prop+" obj: "+obj+"\n");
+		                	$('<li class="contact" id="' + Base64.encode(obj.username_user) + '" onclick="bukachat(' + obj.id_user + ',' + "'" + Base64.encode(obj.username_user) + "'" +');"><div class="wrap"><span class="contact-status '+ obj.status_user.toLowerCase() +'"></span><img src="assets/images/user.jpg" alt="" /><div class="meta"><p class="name">' + obj.nama_user + '</p><p class="preview"><span>Anda:</span> Hai.</p></div></div></li>').appendTo($('#contacts ul'));
+		                });
+	                }
+                	 $('#loader-contacts').fadeOut();
+                	 console.log(response.jumlah);
+                } else {
+                	$('#loader-contacts').fadeOut();
+                	console.log("gagal");
+                }
+
+            }
+        });
 	}
 
-	function bukachat(id_chat){
-		console.log(id_chat);
+	function clearSearch(){
+		carikontak();
+		$('#search input').val('');
 	}
+	var halo = 0;
+	function bukachat(id_chat,id_content){
+		$('#load-messages').fadeIn();
+		window.clearInterval(halo);
+		// $('#'+id_content).attr('class','contact active');
+		$.ajax({
+            type:'GET',
+            url: 'config/proses.php?action=bukachat',
+            success: function(result){
+            	// console.log(result);
+                var response = JSON.parse(result);
 
+               	$('.messages ul li').remove();
+               	if(response.status == 'sukses'){
+               		$.each(response.data,function(prop,obj){
+               			var a = '';
+               			if(obj.dari_pesan == '<?php echo $_SESSION['id']; ?>'){
+               				a = 'replies';
+               			} else {
+               				a = 'sent';
+               			}
+               			$('<li class="' + a + '"><!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /> --><p>' + Base64.decode(obj.isi_pesan) + '</p></li>').appendTo($('.messages ul'));
+               		});
+					$('.message-input input').val(null);
+					$('.contact.active .preview').html('<span>You: </span>');
+
+					$(".messages").animate({ scrollTop: $('.messages').prop('scrollHeight') }, "normal");
+					$('#load-messages').fadeOut();
+               		refChat(response.jumlah);
+                } else {
+                	console.log("gagal");
+					$('#load-messages').fadeOut();
+                }
+
+            }
+        });
+	}
+	function cekchat(jml_awal){
+		$.ajax({
+            type:'POST',
+            data: 'jml_awal='+jml_awal,
+            url: 'config/proses.php?action=cekchat',
+            success: function(result){
+            	// console.log(result);
+                var response = JSON.parse(result);
+                // console.log(response.data);
+               	if(response.status == 'sukses'){
+               		$.each(response.data,function(prop,obj){
+               			// var a = '';
+               			if(obj.dari_pesan == '<?php echo $_SESSION['id']; ?>'){
+               				return false;
+               			} else {
+               				$('<li class="sent"><!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /> --><p>' + Base64.decode(obj.isi_pesan) + '</p></li>').appendTo($('.messages ul'));
+               			}
+               			
+               		});
+					$('.contact.active .preview').html('<span>You: </span>');
+
+					$(".messages").animate({ scrollTop: $('.messages').prop('scrollHeight') }, "normal");
+					// clearInterval(refchat(response.jml_akhir));
+					window.clearInterval(halo);
+					refChat(response.jml_akhir);
+					console.log("sukses");
+                } else {
+                	console.log("gagal");
+                }
+
+            }
+        });
+	}
+	function refChat(jumlah,action){
+		// if(action == 'eksekusi'){
+			halo = window.setInterval(function(){
+				cekchat(jumlah);
+			},500);	
+		// }
+		// if(action == 'hentikan'){
+			// window.clearInterval(halo);
+		// }
+	}
+	var a = window.setInterval(function(){
+		console.log('av');
+	},1000);
+
+	window.setTimeout(function(){
+		// window.clearInterval(halo);
+		window.clearInterval(a);
+	},4000);
+	
 //# sourceURL=pen.js
 </script>

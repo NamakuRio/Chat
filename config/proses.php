@@ -1,4 +1,6 @@
 <?php 
+    //menghilangkan notifikasi error
+    error_reporting(0);
 	//koneksi
 	require_once("koneksi.php");
 	//function
@@ -44,6 +46,23 @@
 
         //function ambilkontak
 		$result = ambilkontak($db,$result);
+
+	} else if ($action == "carikontak"){
+		//data
+		$key = $_POST['key'];
+        //function ambilkontak
+		$result = carikontak($key,$db,$result);
+
+	} else if ($action == "bukachat"){
+
+        //function ambilkontak
+		$result = bukachat($db,$result);
+
+	} else if ($action == "cekchat"){
+		//data
+		$jml_awal = $_POST['jml_awal'];
+        //function ambilkontak
+		$result = cekchat($jml_awal,$db,$result);
 
 	}
 

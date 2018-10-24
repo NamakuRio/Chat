@@ -20,7 +20,17 @@
 
         <script src="../assets/js/jquery.core.js"></script>
         <script src="../assets/js/jquery.app.js"></script>
-	
+	    
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-125737582-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'UA-125737582-1');
+        </script>
+
         <script type="text/javascript">
             
             function login(){
@@ -40,7 +50,7 @@
                             swal("Sukses!", "Anda Berhasil Login", "success");
                             setInterval(function(){
                                 window.location="../chat";
-                            })
+                            },3000)
                         }
 
                     }
@@ -65,7 +75,7 @@
                             swal("Sukses!", "Anda Berhasil Mendaftar\nSilahkan Login", "success");
                             setInterval(function(){
                                 window.location="./login";
-                            })
+                            },3000)
                         }
 
                     }

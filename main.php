@@ -17,7 +17,13 @@
     	$_SESSION['status_user'] = $rowambilStatus['status_user'];
     }
 
+    $query_object = mysqli_query($db,"SELECT * FROM tbl_pesan");
+	$query_object = mysqli_num_rows($query_object);
+	
+	$actual_row_count_msg = $query_object;
+
 ?>
+
 <!DOCTYPE html>
 <html class=''>
 	<head>
@@ -45,15 +51,22 @@
 						<i class="fa fa-instagram" aria-hidden="true"></i>
 					</div> -->
 				</div>
+				
 				<!-- Pesan -->
-				<div class="messages">
+				<div class="messages" onscroll="scrollmsgbox();">
 					<div id="load-messages">
 						<div class="lds-dual-ring"></div>
 						<!-- <div id="loader-messages">
 							<span></span>			
 						</div> -->
 					</div>
-					<ul>
+					<div class="load-more-msg">
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</div>
+					<ul id="list-msg">
 						
 					</ul>
 				</div>

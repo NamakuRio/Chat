@@ -303,7 +303,7 @@ margin: 10px 0 0 20px;
 }
 #frame #sidepanel #search input {
 font-family: "proxima-nova",  "Source Sans Pro", sans-serif;
-padding: 10px 0 10px 46px;
+padding: 10px 45px 10px 46px;
 width: calc(100% - 0px);
 border: none;
 background: #32465a;
@@ -856,4 +856,45 @@ z-index: 9999;
 }
 #btn-close-search-contacts:hover{
 	color: #fff;
+}
+/*Loading load more messages*/
+.load-more-msg {
+  display: none;
+  position: relative;
+  width: 45px;
+  margin: 10px auto;
+  height: 45px;
+  padding:2px 4px 10px 7px;
+  border-radius: 100%;
+  background-color: #fff
+}
+.load-more-msg div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  margin: 6px auto;
+  border: 4px solid #2c3e50;
+  border-radius: 100%;
+  animation: load-more-msg 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #2c3e50 transparent transparent transparent;
+
+}
+.load-more-msg div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.load-more-msg div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.load-more-msg div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes load-more-msg {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

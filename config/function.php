@@ -108,8 +108,12 @@
     function bukachat($db){
 
         $query = mysqli_query($db,"SELECT * FROM tbl_pesan ORDER BY created_pesan DESC");
-        $querys = mysqli_query($db,"SELECT * FROM tbl_pesan ORDER BY created_pesan ASC");
-        $nums = mysqli_num_rows($querys);
+        $nums = mysqli_num_rows($query);
+
+        $ambil_akhir = $nums - 20;
+
+        $querys = mysqli_query($db,"SELECT * FROM tbl_pesan ORDER BY created_pesan ASC LIMIT $ambil_akhir,$nums");
+        
         $response = array();
         while ($f = mysqli_fetch_assoc($querys)) {
             $response[] = $f;
@@ -142,6 +146,23 @@
             $result = array('status' => 'gagal', 'data' => $response);            
         }
 
+        return $result;
+
+    }
+
+    function loadmoremsg($requested_page,$db){
+
+        $set_limit = (($requested_page - 1) * 2) . ",20";
+
+        $query = mysqli_query($db,"SELECT  * FROM tbl_pesan ORDER BY created_pesan ASC LIMIT $set_limit");
+
+        $response = array();
+
+        while ($f = mysqli_fetch_assoc($query)) {
+            $response[] = $f;
+        }
+        $result = array('status' => 'sukses', 'data' => $response, 'jumlah' => $nums);
+        
         return $result;
 
     }

@@ -64,6 +64,12 @@
         //function ambilkontak
 		$result = cekchat($jml_awal,$db,$result);
 
+	} else if ($action == "loadmoremsg"){
+		//data
+		$requested_page = $_POST['page_num'];
+        //function ambilkontak
+		$result = loadmoremsg($requested_page,$db,$result);
+
 	}
 
 	echo json_encode($result);

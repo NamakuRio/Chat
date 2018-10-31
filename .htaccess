@@ -21,6 +21,9 @@ RewriteRule ^([^/\.]+)/?$ main.php?type=page&page=$1 [L]
 RewriteCond $1 !^(c_auth\.php)
 RewriteRule ^auth/([^/\.]+)/?$ c_auth.php?type=auth&auth=$1 [L]
 
+RewriteCond $1 !^(restful_api\.php)
+RewriteRule ^api/([^/\.]+)/([^/\.]+)/?$ restful_api.php?api_key=$1&method=$2 [L]
+
 #RewriteCond $1 !^(tampil\.php)
 #RewriteRule ^berkas/([^/\.]+)/([^/\.]+)/?$ tampil.php?file=berkas&type=$1&id=$2 [L]
 

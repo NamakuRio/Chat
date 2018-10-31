@@ -5,6 +5,8 @@
 	require_once("koneksi.php");
 	//function
 	require_once("function.php");
+	//generate
+	require_once("generate.php");
 
 	session_start();
 
@@ -44,8 +46,9 @@
 
 	} else if ($action == "ambilkontak"){
 
+		$username_user = $_POST['username_chat'];
         //function ambilkontak
-		$result = ambilkontak($db,$result);
+		$result = ambilkontak($username_user,$db,$result);
 
 	} else if ($action == "carikontak"){
 		//data
@@ -69,6 +72,21 @@
 		$requested_page = $_POST['page_num'];
         //function ambilkontak
 		$result = loadmoremsg($requested_page,$db,$result);
+
+	} else if ($action == "tambahkontak"){
+		//data
+		$username_add = $_POST['username_add'];
+		$username_from = $_POST['username_from'];
+		$kode_kontak = generate(10);
+        //function ambilkontak
+		$result = tambahkontak($username_add,$username_from,$kode_kontak,$db,$result);
+
+	} else if ($action == "loadInvitation"){
+		//data
+		$username = $_POST['username'];
+		// $kode_kontak = generate(10);
+        //function ambilkontak
+		$result = loadInvitation($username,$db,$result);
 
 	}
 

@@ -64,7 +64,10 @@
 					</ul>
 				</div>
 				<div id="bottom-bar">
-					<button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Tambah Kontak</span></button>
-					<button id="settings" onclick="refreshkontak();"><i class="fa fa-refresh fa-spin fa-fw" aria-hidden="true"></i> <span>Refresh</span></button>
+					<button id="addcontact" onclick="bukamodal('modal-tambah-kontak');"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Tambah Kontak</span></button>
+
+					<!-- <button id="settings" onclick="refreshkontak();"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i> <span>Refresh</span></button> -->
+
+					<button id="settings" onclick="bukamodal('modal-pengaturan');loadInvitation();"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Pengaturan</span></button>
 				</div>
 			</div>

@@ -1,4 +1,165 @@
 
+::selection {
+	background:#27ae60;
+	color:#e6eaea;
+}
+::-moz-selection {
+	background:#27ae60;
+	color:#e6eaea;
+}
+
+/* START TOOLTIP STYLES */
+[tooltip] {
+  position: relative; /* opinion 1 */
+}
+
+/* Applies to all tooltips */
+[tooltip]::before,
+[tooltip]::after {
+  text-transform: none; /* opinion 2 */
+  font-size: .9em; /* opinion 3 */
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+  position: absolute;
+  display: none;
+  opacity: 0;
+}
+[tooltip]::before {
+  content: '';
+  border: 5px solid transparent; /* opinion 4 */
+  z-index: 1001; /* absurdity 1 */
+}
+[tooltip]::after {
+  content: attr(tooltip); /* magic! */
+  
+  /* most of the rest of this is opinion */
+  font-family: Helvetica, sans-serif;
+  text-align: center;
+  
+  /* 
+    Let the content set the size of the tooltips 
+    but this will also keep them from being obnoxious
+    */
+  min-width: 3em;
+  max-width: 21em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 1ch 1.5ch;
+  border-radius: .3ch;
+  box-shadow: 0 1em 2em -.5em rgba(0, 0, 0, 0.35);
+  background: #333;
+  color: #fff;
+  z-index: 1000; /* absurdity 2 */
+}
+
+/* Make the tooltips respond to hover */
+[tooltip]:hover::before,
+[tooltip]:hover::after {
+  display: block;
+}
+
+/* don't show empty tooltips */
+[tooltip='']::before,
+[tooltip='']::after {
+  display: none !important;
+}
+
+/* FLOW: UP */
+[tooltip]:not([flow])::before,
+[tooltip][flow^="up"]::before {
+  bottom: 100%;
+  border-bottom-width: 0;
+  border-top-color: #333;
+}
+[tooltip]:not([flow])::after,
+[tooltip][flow^="up"]::after {
+  bottom: calc(100% + 5px);
+}
+[tooltip]:not([flow])::before,
+[tooltip]:not([flow])::after,
+[tooltip][flow^="up"]::before,
+[tooltip][flow^="up"]::after {
+  left: 50%;
+  transform: translate(-50%, -.5em);
+}
+
+/* FLOW: DOWN */
+[tooltip][flow^="down"]::before {
+  top: 100%;
+  border-top-width: 0;
+  border-bottom-color: #333;
+}
+[tooltip][flow^="down"]::after {
+  top: calc(100% + 5px);
+}
+[tooltip][flow^="down"]::before,
+[tooltip][flow^="down"]::after {
+  left: 50%;
+  transform: translate(-50%, .5em);
+}
+
+/* FLOW: LEFT */
+[tooltip][flow^="left"]::before {
+  top: 50%;
+  border-right-width: 0;
+  border-left-color: #333;
+  left: calc(0em - 5px);
+  transform: translate(-.5em, -50%);
+}
+[tooltip][flow^="left"]::after {
+  top: 50%;
+  right: calc(100% + 5px);
+  transform: translate(-.5em, -50%);
+}
+
+/* FLOW: RIGHT */
+[tooltip][flow^="right"]::before {
+  top: 50%;
+  border-left-width: 0;
+  border-right-color: #333;
+  right: calc(0em - 5px);
+  transform: translate(.5em, -50%);
+}
+[tooltip][flow^="right"]::after {
+  top: 50%;
+  left: calc(100% + 5px);
+  transform: translate(.5em, -50%);
+}
+
+/* KEYFRAMES */
+@keyframes tooltips-vert {
+  to {
+    opacity: .9;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes tooltips-horz {
+  to {
+    opacity: .9;
+    transform: translate(0, -50%);
+  }
+}
+
+/* FX All The Things */ 
+[tooltip]:not([flow]):hover::before,
+[tooltip]:not([flow]):hover::after,
+[tooltip][flow^="up"]:hover::before,
+[tooltip][flow^="up"]:hover::after,
+[tooltip][flow^="down"]:hover::before,
+[tooltip][flow^="down"]:hover::after {
+  animation: tooltips-vert 300ms ease-out forwards;
+}
+
+[tooltip][flow^="left"]:hover::before,
+[tooltip][flow^="left"]:hover::after,
+[tooltip][flow^="right"]:hover::before,
+[tooltip][flow^="right"]:hover::after {
+  animation: tooltips-horz 300ms ease-out forwards;
+}
+
 body {
 display: flex;
 align-items: center;
@@ -23,7 +184,7 @@ height: 100vh;
 /*max-height: 720px;*/
 background: #E6EAEA;
 }
-@media screen and (max-width: 360px) {
+@media (max-width: 360px) {
 #frame {
 width: 100%;
 height: 100vh;
@@ -40,7 +201,7 @@ color: #f5f5f5;
 overflow: hidden;
 position: relative;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel {
 width: 58px;
 min-width: 58px;
@@ -50,7 +211,7 @@ min-width: 58px;
 width: 80%;
 margin: 25px auto;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile {
 width: 100%;
 margin: 0 auto;
@@ -82,7 +243,7 @@ overflow: hidden;
 -webkit-transition: 0.3s height ease;
 transition: 0.3s height ease;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile .wrap {
 height: 55px;
 }
@@ -100,7 +261,7 @@ cursor: pointer;
 -webkit-transition: 0.3s border ease;
 transition: 0.3s border ease;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile .wrap img {
 width: 40px;
 margin-left: 4px;
@@ -122,7 +283,7 @@ border: 2px solid #95a5a6;
 float: left;
 margin-left: 15px;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile .wrap p {
 display: none;
 }
@@ -134,7 +295,7 @@ font-size: 0.8em;
 cursor: pointer;
 color: #435f7a;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile .wrap i.expand-button {
 display: none;
 }
@@ -154,7 +315,7 @@ background: #435f7a;
 -webkit-transition: 0.3s all ease;
 transition: 0.3s all ease;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile .wrap #status-options {
 width: 58px;
 margin-top: 57px;
@@ -165,7 +326,7 @@ opacity: 1;
 visibility: visible;
 margin: 75px 0 0 0;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile .wrap #status-options.active {
 margin-top: 62px;
 }
@@ -180,7 +341,7 @@ border-right: 6px solid transparent;
 border-bottom: 8px solid #435f7a;
 margin: -8px 0 0 24px;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile .wrap #status-options:before {
 margin-left: 23px;
 }
@@ -194,7 +355,7 @@ padding: 15px 0 30px 18px;
 display: block;
 cursor: pointer;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile .wrap #status-options ul li {
 padding: 15px 0 35px 22px;
 }
@@ -209,7 +370,7 @@ height: 10px;
 border-radius: 50%;
 margin: 5px 0 0 0;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile .wrap #status-options ul li span.status-circle {
 width: 14px;
 height: 14px;
@@ -225,7 +386,7 @@ background: transparent;
 border-radius: 50%;
 z-index: 0;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile .wrap #status-options ul li span.status-circle:before {
 height: 18px;
 width: 18px;
@@ -234,7 +395,7 @@ width: 18px;
 #frame #sidepanel #profile .wrap #status-options ul li p {
 padding-left: 12px;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #profile .wrap #status-options ul li p {
 display: none;
 }
@@ -292,7 +453,7 @@ border-top: 1px solid #32465a;
 border-bottom: 1px solid #32465a;
 font-weight: 300;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #search {
 display: none;
 }
@@ -330,7 +491,7 @@ height: calc(100% - 177px);
 overflow-y: scroll;
 overflow-x: hidden;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #contacts {
 height: calc(100% - 149px);
 overflow-y: scroll;
@@ -356,7 +517,7 @@ padding: 10px 0 15px 0;
 font-size: 0.9em;
 cursor: pointer;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #contacts ul li.contact {
 padding: 6px 0 46px 8px;
 }
@@ -376,7 +537,7 @@ width: 88%;
 margin: 0 auto;
 position: relative;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #contacts ul li.contact .wrap {
 width: 100%;
 }
@@ -406,7 +567,7 @@ border-radius: 50%;
 float: left;
 margin-right: 10px;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #contacts ul li.contact .wrap img {
 margin-right: 0px;
 }
@@ -414,7 +575,7 @@ margin-right: 0px;
 #frame #sidepanel #contacts ul li.contact .wrap .meta {
 padding: 5px 0 0 0;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #contacts ul li.contact .wrap .meta {
 display: none;
 }
@@ -459,7 +620,7 @@ cursor: pointer;
 font-size: 0.85em;
 font-family: "proxima-nova",  "Source Sans Pro", sans-serif;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #bottom-bar button {
 float: none;
 width: 100%;
@@ -472,7 +633,7 @@ outline: none;
 #frame #sidepanel #bottom-bar button:nth-child(1) {
 border-right: 1px solid #2c3e50;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #bottom-bar button:nth-child(1) {
 border-right: none;
 border-bottom: 1px solid #2c3e50;
@@ -485,12 +646,12 @@ background: #435f7a;
 margin-right: 3px;
 font-size: 1em;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #bottom-bar button i {
 font-size: 1.3em;
 }
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame #sidepanel #bottom-bar button span {
 display: none;
 }
@@ -502,13 +663,13 @@ height: 100%;
 overflow: hidden;
 position: relative;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame .content {
 width: calc(100% - 58px);
 min-width: 300px !important;
 }
 }
-@media screen and (min-width: 900px) {
+@media (min-width: 900px) {
 #frame .content {
 width: calc(100% - 340px);
 }
@@ -548,7 +709,7 @@ max-height: calc(100% - 100px);
 overflow-y: scroll;
 overflow-x: hidden;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame .content .messages {
 max-height: calc(100% - 105px);
 }
@@ -600,7 +761,7 @@ border-radius: 20px;
 max-width: 205px;
 line-height: 130%;
 }
-@media screen and (min-width: 735px) {
+@media (min-width: 735px) {
 #frame .content .messages ul li p {
 max-width: 300px;
 }
@@ -623,7 +784,7 @@ padding: 12px 32px 12px 8px;
 font-size: 0.8em;
 color: #32465a;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame .content .message-input .wrap input {
 padding: 15px 32px 16px 8px;
 }
@@ -641,7 +802,7 @@ color: #435f7a;
 opacity: .5;
 cursor: pointer;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame .content .message-input .wrap .attachment {
 margin-top: 17px;
 right: 65px;
@@ -659,7 +820,7 @@ cursor: pointer;
 background: #32465a;
 color: #f5f5f5;
 }
-@media screen and (max-width: 735px) {
+@media (max-width: 735px) {
 #frame .content .message-input .wrap button {
 padding: 16px 0;
 }
@@ -897,4 +1058,181 @@ z-index: 9999;
   100% {
     transform: rotate(360deg);
   }
+}
+.back-to-down {
+  position: absolute;
+  bottom: 11%;
+  right: 3%;
+  background-color: #2c3e50;
+  padding: 10px;
+  border-radius: 10%;
+  color: #fff;
+  cursor: pointer;
+  display: none;
+  opacity: .8;
+  transition: all .2s;
+}
+.popup-new-message {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: -10px -10px 0 0;
+  background: #27ae60;
+  padding: 5px;
+  font-size: 12px;
+  border-radius: 100%;
+  min-width: 20px;
+  min-height: 20px;
+  max-width:50px;
+  max-height:50px;
+  text-align: center;
+  font-family: calibri;
+}
+
+/*Loading Modals*/
+.wrap-loading-modals{
+  background-color: #2c2e2f80;
+  position: absolute;
+  z-index: 999999;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+.loading-modals {
+  display: inline-block;
+  position: relative;
+  margin: 90px 40%;
+}
+.loading-modals div {
+  transform-origin: 32px 32px;
+  animation: loading-modals 1.2s linear infinite;
+}
+.loading-modals div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 3px;
+  left: 29px;
+  width: 5px;
+  height: 14px;
+  border-radius: 20%;
+  background: #fff;
+}
+.loading-modals div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.1s;
+}
+.loading-modals div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -1s;
+}
+.loading-modals div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.9s;
+}
+.loading-modals div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.8s;
+}
+.loading-modals div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.7s;
+}
+.loading-modals div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.6s;
+}
+.loading-modals div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.5s;
+}
+.loading-modals div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.4s;
+}
+.loading-modals div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.3s;
+}
+.loading-modals div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.2s;
+}
+.loading-modals div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.1s;
+}
+.loading-modals div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+}
+@keyframes loading-modals {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+#content-menu-settings{
+  overflow-y: auto;
+  max-height: 200px;
+}
+#content-menu-settings::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+#content-menu-settings::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.menu-settings{
+  width: 100%;
+  background-color: transparent;
+  border-color: transparent;
+  padding: 15px;
+  text-align: left;
+  transition: all .2s;
+  cursor: pointer;
+}
+.menu-settings:hover{
+  background-color: #2c3e5029;
+  /*color: #fff;*/
+}
+.menu-settings:focus{
+  background-color: #2c3e50;
+  color: #fff;
+}
+.menu-invitation{
+  width: 100%;
+  background-color: transparent;
+  border-color: transparent;
+  padding: 15px;
+  text-align: left;
+  transition: all .2s;
+  /*cursor: pointer;*/
+}
+.menu-invitation:hover{
+  /*background-color: #2c3e5029;*/
+  /*color: #fff;*/
+}
+.menu-invitation:focus{
+ /* background-color: #2c3e50;
+  color: #fff;*/
+}
+.option-invitation{
+  display: inline-block;
+  float: right;
+  transition: all .5s;
+}
+.accept-invitation,.reject-invitation {
+  padding: 5px;
+  transition: all .5s;
+  display: inline-block;
+  cursor: pointer;
+}
+.accept-invitation:hover {
+  /*transform: scale(1.2);*/
+}
+.reject-invitation:hover {
+  /*transform: scale(1.2);*/
 }

@@ -1,5 +1,8 @@
 <script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/popper.min.js"></script><!-- Popper for Bootstrap -->
 <script src="assets/js/jquery.min.js"></script>
+<!-- Sweet-Alert  -->
+<script src="plugins/bootstrap-sweetalert/sweet-alert.min.js"></script>
 <!-- <script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
 <!-- <script src="https://use.typekit.net/hoy3lrg.js"></script> -->
 <script>try{Typekit.load({ async: true });}catch(e){}</script>	
@@ -55,6 +58,14 @@
 		if($.trim(message) == '') {
 			return false;
 		}
+		var datenow = new Date();
+		var harinow = datenow.getDate();
+		var bulannow = datenow.getMonth()+1;
+		var tahunnow = datenow.getFullYear();
+		var detiknow = datenow.getSeconds();
+		var menitnow = datenow.getMinutes();
+		var jamnow = datenow.getHours();
+		var nowDate = tahunnow + "-" + bulannow + "-" + harinow + " " + jamnow + ":" + menitnow + ":" + detiknow;
 		console.log(message_encode);
 		$.ajax({
             type:'POST',
@@ -64,7 +75,7 @@
                 var response = JSON.parse(result);
 
                 if(response.status == 'sukses'){
-                    $('<li class="replies"><!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /> --><p>' + message + '</p></li>').appendTo($('.messages ul'));
+                    $('<li class="replies"><!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /> --><p tooltip="' + nowDate +'" flow="left">' + message + '</p></li>').appendTo($('.messages ul'));
 					$('.message-input input').val(null);
 					$('.contact.active .preview').html('<span>You: </span>' + message);
 
@@ -119,12 +130,13 @@
 	function ambilkontak(){
 
 		$.ajax({
-            type:'GET',
+            type:'POST',
+            data:'username_chat=<?php echo $_SESSION['username']; ?>',
             url: 'config/proses.php?action=ambilkontak',
             success: function(result){
             	// console.log(result);
                 var response = JSON.parse(result);
-               
+               console.log(response);
                 if(response.status == 'sukses'){
                 	 $.each(response.data,function(prop,obj){
 	                	// console.log("prop: "+prop+" obj: "+obj+"\n");
@@ -142,9 +154,11 @@
 	}
 
 	function refreshkontak(){
+		$('#settings i').addClass(' fa-spin');
 	   	$('#loader-contacts').fadeIn();
 		$.ajax({
-            type:'GET',
+            type:'POST',
+            data:'username_chat=<?php echo $_SESSION['username']; ?>',
             url: 'config/proses.php?action=ambilkontak',
             success: function(result){
             	// console.log(result);
@@ -160,7 +174,7 @@
                 	$('#loader-contacts').fadeOut();
                 	console.log("gagal");
                 }
-
+                $('#settings i').removeClass('fa-spin');
             }
         });
 	}
@@ -218,6 +232,7 @@
 		carikontak();
 		$('#search input').val('');
 	}
+
 	var halo = 0;
 	function bukachat(id_chat,id_content){
 		$('#load-messages').fadeIn();
@@ -235,10 +250,12 @@
                			var a = '';
                			if(obj.dari_pesan == '<?php echo $_SESSION['id']; ?>'){
                				a = 'replies';
+               				flow_a = 'left';
                			} else {
                				a = 'sent';
+               				flow_a = 'right';
                			}
-               			$('<li class="' + a + '"><!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /> --><p>' + Base64.decode(obj.isi_pesan) + '</p></li>').appendTo($('.messages ul'));
+               			$('<li class="' + a + '"><!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /> --><p  tooltip="' + obj.created_pesan +'" flow="' + flow_a + '">' + Base64.decode(obj.isi_pesan) + '</p></li>').appendTo($('.messages ul'));
                		});
 					$('.message-input input').val(null);
 					$('.contact.active .preview').html('<span>You: </span>');
@@ -270,7 +287,8 @@
                			if(obj.dari_pesan == '<?php echo $_SESSION['id']; ?>'){
                				return false;
                			} else {
-               				$('<li class="sent"><!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /> --><p>' + Base64.decode(obj.isi_pesan) + '</p></li>').appendTo($('.messages ul'));
+               				$('<li class="sent"><!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /> --><p tooltip="' + new Date('Y-m-d') +'" flow="right">' + Base64.decode(obj.isi_pesan) + '</p></li>').appendTo($('.messages ul'));
+								ringtone_new_chat();
                			}
                			
                		});
@@ -301,7 +319,23 @@
 	
 	var page = 1;
 
+	function ringtone_new_chat() {
+        var audioElement = document.createElement('audio');
+        audioElement.setAttribute('src', './assets/music/pesan_masuk.mp3');
+        audioElement.setAttribute('autoplay', 'autoplay');
+        audioElement.load();
+        audioElement.play();
+    }
+
 	function scrollmsgbox(){
+
+		// if($('.messages').prop('scrollHeight') > ($('.messages').scrollTop() + 297)){
+		// 	$('.back-to-down').fadeIn();
+		// }
+
+		// if($('.messages').prop('scrollHeight') == ( $('.messages').scrollTop() + 297 )){
+		// 	$('.back-to-down').fadeOut();
+		// }
 
 		if($('.messages').scrollTop() + $(window).height() == $(document).height()){
 			$('.load-more-msg').fadeIn();
@@ -316,6 +350,7 @@
 
             if((page-1)* 4 > actual_count){
                 console.log("penuh");
+                $('.load-more-msg').fadeOut();
             }else{
                 $.ajax({
                     type: "POST",
@@ -329,11 +364,13 @@
 	               			var a = '';
 	               			if(obj.dari_pesan == '<?php echo $_SESSION['id']; ?>'){
 	               				a = 'replies';
+	               				flow_a = 'left';
 	               			} else {
 	               				a = 'sent';
+	               				flow_a = 'right';
 	               			}
 
-	               			$('<li class="' + a + '"><!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /> --><p>' + Base64.decode(obj.isi_pesan) + '</p></li>').prependTo($('.messages ul'));
+	               			$('<li class="' + a + '" data-toggle="tooltip" data-placement="left" title="Tooltip on left"><!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /> --><p tooltip="' + new Date('Y-m-d') +'" flow="' + flow_a + '">' + Base64.decode(obj.isi_pesan) + '</p></li>').prependTo($('.messages ul'));
 	               		});
 	               		$(".messages").animate({ scrollTop: 200 }, "normal");
 	               		$('.load-more-msg').fadeOut();
@@ -348,7 +385,142 @@
 		// console.log($('.messages').scrollTop() + $(window).height() > $(document).height() - 200);
 	}
 
-	window.onscroll = console.log('H');
+	$('.back-to-down').on('click', function(e) {
+		// console.log(e);
+		$(".messages").animate({ scrollTop: $('.messages').prop('scrollHeight') }, "normal");
+	});
+
+	$('.back-to-down').on('mouseover', function(e) {
+		// console.log(e);
+		$('.back-to-down').css('opacity','1');
+		console.log('hhh');
+	});
+
+	$('.back-to-down').on('mouseout', function(e) {
+		// console.log(e);
+		$('.back-to-down').css('opacity','.8');
+		console.log('hhh');
+	});
+
+	 // $(document).ready(function() {
+  //         if (Notification.permission !== "granted")
+  //           Notification.requestPermission();
+  //   });
+	
+	window.onload = reqPermissionNotify();
+    
+	function reqPermissionNotify(){
+		if (Notification.permission !== "granted")
+            Notification.requestPermission();
+	}
+
+    function notifikasi() {
+
+        if (!Notification) {
+            alert('Browsermu tidak mendukung Web Notification.'); 
+            return;
+        }
+        if (Notification.permission !== "granted")
+            Notification.requestPermission();
+        else {
+            var notifikasi = new Notification('Judul Notifikasi', {
+                icon: './assets/images/favicon.ico',
+                body: "Belajar di Jago Coding, Sangat Menyenangkan !",
+            });
+            notifikasi.onclick = function () {
+                window.open("./");      
+            };
+            setTimeout(function(){
+                notifikasi.close();
+            }, 5000);
+        }
+    };
+
+    function bukamodal(v_modal){
+    	$('#'+v_modal).fadeIn();
+    }
+
+    function tutupmodal(v_modal){
+    	$('#'+v_modal).fadeOut();
+    	$('#content-menu-settings ul li').remove();
+    }
+
+    function modalSettings(v_settings){
+
+    }
+
+    function tambahkontak(){
+    	
+
+    	var username_add = $('#username_add').val();
+    	var username_from = '<?php echo $_SESSION['username']; ?>';
+
+    	if($.trim(username_add) == '') {
+    		swal("Warning!", "Form masih kosong", "warning");
+			return false;
+		}
+    	$('.wrap-loading-modals').fadeIn();
+    	$.ajax({
+            type:'POST',
+            data: 'username_add='+username_add+'&username_from='+username_from,
+            url: 'config/proses.php?action=tambahkontak',
+            success: function(result){
+            	// console.log(result);
+                var response = JSON.parse(result);
+                console.log(response);
+                if(response.status == 'sukses'){
+                	swal("Kontak Berhasil Ditambah", "Silahkan menunggu konfirmasi dari teman Anda..", "success");
+                	tutupmodal('modal-tambah-kontak');
+                } else if (response.status == 'gagal') {
+                	switch(response.kode_v){
+	                    case "1":
+	                        swal("Gagal!", "Username yang Anda masukkkan tidak terdaftar..", "error");
+	                    break;
+	                    case "2":
+	                        swal("Gagal!", "Tidak dapat menambahkan, silahkan ulangi lagi", "error");
+	                    break;
+	                    case "3":
+	                        swal("Warning!", "Anda Sudah Berteman", "warning");
+	                    break;
+	                    default:
+	                    break;
+	                }
+                }
+                $('#username_add').val('');
+               	$('.wrap-loading-modals').fadeOut();
+
+
+            }
+        });
+
+    }
+
+    function loadInvitation(){
+
+    	$.ajax({
+            type:'POST',
+            data:'username=<?php echo $_SESSION['username']; ?>',
+            url: 'config/proses.php?action=loadInvitation',
+            success: function(result){
+            	// console.log(result);
+                var response = JSON.parse(result);
+                if(response.status == 'sukses'){
+                	 $.each(response.data,function(prop,obj){
+	                	// console.log("prop: "+prop+" obj: "+obj+"\n");
+	                	$('<li class="menu-invitation"><div class="wrap">' + obj.nama_user + ' - ' + obj.username_user + '<div class="option-invitation"><div class="accept-invitation" tooltip="Terima" flow="left" onclick="optionInvitation(' + "'accept'" +');"><i class="ti-check text-success"></i></div><div class="reject-invitation" tooltip="Tolak" flow="left" onclick="optionInvitation(' + "'reject'" +');"><i class="ti-close text-danger"></i></div></div></li>').appendTo($('#content-menu-settings ul'));
+	                });
+                } else {
+                	console.log("gagal");
+                }
+
+            }
+        });
+
+    }
+
+    function optionInvitation(option){
+    	console.log(option);
+    }
 
 //# sourceURL=pen.js
 </script>

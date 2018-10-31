@@ -53,7 +53,10 @@
                 </div>
             </div>
         </div>
-        
+        <div class="loader-auth">
+            <div></div>
+            <div></div>
+        </div>
     	<?php include("component/auth/component_script.php"); ?>
 
 	</body>

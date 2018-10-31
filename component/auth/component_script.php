@@ -37,13 +37,21 @@
 
                 var username = $('#username').val();
                 var password = $('#password').val();
+                $('.loader-auth').fadeIn();
+
+                if($.trim(username) == '' || $.trim(password) == '' ) {
+                    swal("Form masih kosong!", "Anda harus mengisi semua form", "warning");
+                    $('.loader-auth').fadeOut();
+                    return false;
+                }
+
 
                 $.ajax({
                     type:'POST',
                     data: 'username='+username+'&password='+password,
                     url: '../config/proses.php?action=login',
                     success: function(result){
-                        console.log(result);
+
                         response = JSON.parse(result);
 
                         if(response.status == "sukses"){
@@ -51,8 +59,20 @@
                             setInterval(function(){
                                 window.location="../chat";
                             },3000)
+                        } 
+                        else if(response.status == "gagal"){
+                            switch(response.kode_v){
+                                case "1":
+                                    swal("Gagal Login!", "Password yang Anda masukkan salah..", "error");
+                                break;
+                                case "2":
+                                    swal("Gagal Login!", "Akun Anda tidak terdaftar..", "error");
+                                break;
+                                default:
+                                break;
+                            }
                         }
-
+                        $('.loader-auth').fadeOut();
                     }
                 })
             }
@@ -63,6 +83,13 @@
                 var email = $('#email').val();
                 var username = $('#username').val();
                 var password = $('#password').val();
+                $('.loader-auth').fadeIn();
+
+                if($.trim(nama) == '' || $.trim(email) == '' || $.trim(username) == '' || $.trim(password) == '' ) {
+                    swal("Form masih kosong!", "Anda harus mengisi semua form", "warning");
+                    $('.loader-auth').fadeOut();
+                    return false;
+                }
 
                 $.ajax({
                     type:'POST',
@@ -77,7 +104,19 @@
                                 window.location="./login";
                             },3000)
                         }
-
+                        else if(response.status == "gagal"){
+                            switch(response.kode_v){
+                                case "1":
+                                    swal("Gagal Login!", "Silahkan ulangi lagi..", "error");
+                                break;
+                                case "2":
+                                    swal("Gagal Login!", "Username atau Email Anda sudah Terdaftar\nMohon gunakan yang lainnya..", "error");
+                                break;
+                                default:
+                                break;
+                            }
+                        }
+                        $('.loader-auth').fadeOut();
                     }
                 })
             }

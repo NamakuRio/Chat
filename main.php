@@ -54,18 +54,23 @@
 				
 				<!-- Pesan -->
 				<div class="messages" onscroll="scrollmsgbox();">
+					<!-- Load Messages -->
 					<div id="load-messages">
 						<div class="lds-dual-ring"></div>
-						<!-- <div id="loader-messages">
-							<span></span>			
-						</div> -->
 					</div>
+					<!-- Load More Messages -->
 					<div class="load-more-msg">
 						<div></div>
 						<div></div>
 						<div></div>
 						<div></div>
 					</div>
+					<!-- Back to down -->
+					<div class="back-to-down">
+						<i class="fa fa-arrow-down"></i>
+						<span class="popup-new-message"></span>
+					</div>
+					<!-- List Messages -->
 					<ul id="list-msg">
 						
 					</ul>
@@ -80,6 +85,8 @@
 			</div>
 		</div>
 		
+		<?php include("component/component_modals.php"); ?>
+
 		<?php include("component/component_script.php"); ?>
 
 	</body>
